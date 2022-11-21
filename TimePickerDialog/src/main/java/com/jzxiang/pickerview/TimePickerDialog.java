@@ -3,9 +3,6 @@ package com.jzxiang.pickerview;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +10,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.jzxiang.pickerview.config.PickerConfig;
 import com.jzxiang.pickerview.data.Type;
@@ -75,12 +76,15 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
         cancel.setOnClickListener(this);
         TextView sure = (TextView) view.findViewById(R.id.tv_sure);
         sure.setOnClickListener(this);
+        TextView reset = (TextView) view.findViewById(R.id.tv_reset);
+        reset.setOnClickListener(this);
         TextView title = (TextView) view.findViewById(R.id.tv_title);
         View toolbar = view.findViewById(R.id.toolbar);
 
         title.setText(mPickerConfig.mTitleString);
         cancel.setText(mPickerConfig.mCancelString);
         sure.setText(mPickerConfig.mSureString);
+        reset.setText(mPickerConfig.mResetString);
         toolbar.setBackgroundColor(mPickerConfig.mThemeColor);
 
         mTimeWheel = new TimeWheel(view, mPickerConfig);
@@ -94,6 +98,11 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
             dismiss();
         } else if (i == R.id.tv_sure) {
             sureClicked();
+        } else if (i == R.id.tv_reset) {
+            if (mPickerConfig.mCallBack != null) {
+                mPickerConfig.mCallBack.onDateReSet(this);
+            }
+            dismiss();
         }
     }
     
@@ -157,6 +166,11 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
 
         public Builder setSureStringId(String right) {
             mPickerConfig.mSureString = right;
+            return this;
+        }
+
+        public Builder setResetStringId(String reset) {
+            mPickerConfig.mResetString = reset;
             return this;
         }
 

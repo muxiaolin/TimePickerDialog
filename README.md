@@ -2,6 +2,8 @@
 GitHub: https://github.com/JZXiang
 
 ---
+修改加入重置按钮，更新androidx
+implementation 'io.github.muxiaolin:TimePickerDialog:1.0.1'
 
 [中文版文档](https://github.com/JZXiang/TimePickerDialog/blob/master/README-cn.md)
 # TimePickerDialog

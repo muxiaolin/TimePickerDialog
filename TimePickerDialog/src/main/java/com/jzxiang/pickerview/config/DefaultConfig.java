@@ -15,6 +15,7 @@ public class DefaultConfig {
     public static final boolean CYCLIC = true;
     public static String CANCEL = "取消";
     public static String SURE = "确定";
+    public static String RESET = "[重置]";
     public static String TITLE = "TimePicker";
     public static String YEAR = "年";
     public static String MONTH = "月";
