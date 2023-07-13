@@ -1,19 +1,13 @@
 package com.jzxiang.pickerview;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.jzxiang.pickerview.config.PickerConfig;
 import com.jzxiang.pickerview.data.Type;
@@ -23,55 +17,53 @@ import com.jzxiang.pickerview.listener.OnDateSetListener;
 import java.util.Calendar;
 
 /**
- * Created by jzxiang on 16/4/19.
+ * Author: PL
+ * Date: 2023/7/13
+ * Desc:
  */
-public class TimePickerDialog extends DialogFragment implements View.OnClickListener {
-    PickerConfig mPickerConfig;
+public class TimePickPopWindow extends PopupWindow implements View.OnClickListener {
+    private final Context mContext;
+    private final LayoutInflater mInflater;
+    private final PickerConfig mPickerConfig;
     private TimeWheel mTimeWheel;
     private long mCurrentMillSeconds;
 
-    private static TimePickerDialog newIntance(PickerConfig pickerConfig) {
-        TimePickerDialog timePickerDialog = new TimePickerDialog();
-        timePickerDialog.initialize(pickerConfig);
-        return timePickerDialog;
+    private static TimePickPopWindow create(Context context, PickerConfig pickerConfig) {
+        TimePickPopWindow timePickPopWindow = new TimePickPopWindow(context, pickerConfig);
+        return timePickPopWindow;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Activity activity = getActivity();
-        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+    public TimePickPopWindow(Context context, PickerConfig pickerConfig) {
+        super(context);
+        this.mContext = context;
+        mPickerConfig = pickerConfig == null ? new PickerConfig() : pickerConfig;
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //设置View
+        setContentView(initView());
+        //设置宽与高
+        setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+        setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+//        setAnimationStyle(R.style.MyPopupWindow);
+        //设置背景只有设置了这个才可以点击外边和BACK消失
+        setBackgroundDrawable(new ColorDrawable());
+        setFocusable(true);
+        setOutsideTouchable(true);
+        setTouchable(true);
+        setTouchInterceptor(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // 判断是不是点击了外部
+                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        int height = getResources().getDimensionPixelSize(R.dimen.picker_height);
-
-        Window window = getDialog().getWindow();
-        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, height);//Here!
-        window.setGravity(Gravity.BOTTOM);
-    }
-
-    private void initialize(PickerConfig pickerConfig) {
-        mPickerConfig = pickerConfig;
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = new Dialog(getActivity(), R.style.Dialog_NoTitle);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setContentView(initView());
-        return dialog;
-    }
-
-    View initView() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view = inflater.inflate(R.layout.timepicker_layout, null);
+    private View initView() {
+        View view = mInflater.inflate(R.layout.timepicker_layout_pop, null);
         TextView cancel = (TextView) view.findViewById(R.id.tv_cancel);
         cancel.setOnClickListener(this);
         TextView sure = (TextView) view.findViewById(R.id.tv_sure);
@@ -156,116 +148,114 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
             mPickerConfig = new PickerConfig();
         }
 
-        public Builder setType(Type type) {
+        public TimePickPopWindow.Builder setType(Type type) {
             mPickerConfig.mType = type;
             return this;
         }
 
-        public Builder setThemeColor(int color) {
+        public TimePickPopWindow.Builder setThemeColor(int color) {
             mPickerConfig.mThemeColor = color;
             return this;
         }
 
-        public Builder setCancelStringId(String left) {
+        public TimePickPopWindow.Builder setCancelStringId(String left) {
             mPickerConfig.mCancelString = left;
             return this;
         }
 
-        public Builder setSureStringId(String right) {
+        public TimePickPopWindow.Builder setSureStringId(String right) {
             mPickerConfig.mSureString = right;
             return this;
         }
 
-        public Builder setResetStringId(String reset) {
+        public TimePickPopWindow.Builder setResetStringId(String reset) {
             mPickerConfig.mResetString = reset;
             return this;
         }
 
-        public Builder setTitleStringId(String title) {
+        public TimePickPopWindow.Builder setTitleStringId(String title) {
             mPickerConfig.mTitleString = title;
             return this;
         }
 
-        public Builder setToolBarTextColor(int color) {
+        public TimePickPopWindow.Builder setToolBarTextColor(int color) {
             mPickerConfig.mToolBarTVColor = color;
             return this;
         }
 
-        public Builder setToolBarPadding(int padding) {
+        public TimePickPopWindow.Builder setToolBarPadding(int padding) {
             mPickerConfig.mToolBarPadding = padding;
             return this;
         }
 
-        public Builder setWheelItemTextNormalColor(int color) {
+        public TimePickPopWindow.Builder setWheelItemTextNormalColor(int color) {
             mPickerConfig.mWheelTVNormalColor = color;
             return this;
         }
 
-        public Builder setWheelItemTextSelectorColor(int color) {
+        public TimePickPopWindow.Builder setWheelItemTextSelectorColor(int color) {
             mPickerConfig.mWheelTVSelectorColor = color;
             return this;
         }
 
-        public Builder setWheelItemTextSize(int size) {
+        public TimePickPopWindow.Builder setWheelItemTextSize(int size) {
             mPickerConfig.mWheelTVSize = size;
             return this;
         }
 
-        public Builder setCyclic(boolean cyclic) {
+        public TimePickPopWindow.Builder setCyclic(boolean cyclic) {
             mPickerConfig.cyclic = cyclic;
             return this;
         }
 
-        public Builder setMinMillseconds(long millseconds) {
+        public TimePickPopWindow.Builder setMinMillseconds(long millseconds) {
             mPickerConfig.mMinCalendar = new WheelCalendar(millseconds);
             return this;
         }
 
-        public Builder setMaxMillseconds(long millseconds) {
+        public TimePickPopWindow.Builder setMaxMillseconds(long millseconds) {
             mPickerConfig.mMaxCalendar = new WheelCalendar(millseconds);
             return this;
         }
 
-        public Builder setCurrentMillseconds(long millseconds) {
+        public TimePickPopWindow.Builder setCurrentMillseconds(long millseconds) {
             mPickerConfig.mCurrentCalendar = new WheelCalendar(millseconds);
             return this;
         }
 
-        public Builder setYearText(String year) {
+        public TimePickPopWindow.Builder setYearText(String year) {
             mPickerConfig.mYear = year;
             return this;
         }
 
-        public Builder setMonthText(String month) {
+        public TimePickPopWindow.Builder setMonthText(String month) {
             mPickerConfig.mMonth = month;
             return this;
         }
 
-        public Builder setDayText(String day) {
+        public TimePickPopWindow.Builder setDayText(String day) {
             mPickerConfig.mDay = day;
             return this;
         }
 
-        public Builder setHourText(String hour) {
+        public TimePickPopWindow.Builder setHourText(String hour) {
             mPickerConfig.mHour = hour;
             return this;
         }
 
-        public Builder setMinuteText(String minute) {
+        public TimePickPopWindow.Builder setMinuteText(String minute) {
             mPickerConfig.mMinute = minute;
             return this;
         }
 
-        public Builder setCallBack(OnDateSetListener listener) {
+        public TimePickPopWindow.Builder setCallBack(OnDateSetListener listener) {
             mPickerConfig.mCallBack = listener;
             return this;
         }
 
-        public TimePickerDialog build() {
-            return newIntance(mPickerConfig);
+        public TimePickPopWindow build(Context context) {
+            return create(context, mPickerConfig);
         }
 
     }
-
-
 }

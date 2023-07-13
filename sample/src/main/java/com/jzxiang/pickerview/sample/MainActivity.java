@@ -5,10 +5,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.jzxiang.pickerview.TimePickPopWindow;
 import com.jzxiang.pickerview.TimePickerDialog;
 import com.jzxiang.pickerview.data.Type;
 import com.jzxiang.pickerview.listener.OnDateSetListener;
+import com.jzxiang.pickerview.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TimePickerDialog mDialogYearMonthDay;
     TimePickerDialog mDialogMonthDayHourMinute;
     TimePickerDialog mDialogHourMinute;
+    TimePickPopWindow timePickPopWindow;
     TextView mTvTime;
 
     SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -73,6 +77,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setType(Type.HOURS_MINS)
                 .setCallBack(this)
                 .build();
+
+        timePickPopWindow = new TimePickPopWindow.Builder()
+                .setCancelStringId("")
+                .setTitleStringId("")
+                .setThemeColor(ContextCompat.getColor(this, android.R.color.white))
+                .setToolBarTextColor(ContextCompat.getColor(this, android.R.color.black))
+                .setToolBarPadding(30)
+                .setType(Type.YEAR_MONTH_DAY)
+                .setCallBack(this)
+                .build(this);
     }
 
     void initView() {
@@ -81,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_year_month).setOnClickListener(this);
         findViewById(R.id.btn_month_day_hour_minute).setOnClickListener(this);
         findViewById(R.id.btn_hour_minute).setOnClickListener(this);
+        findViewById(R.id.btn_pop_wind).setOnClickListener(this);
 
         mTvTime = (TextView) findViewById(R.id.tv_time);
     }
@@ -103,12 +118,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_hour_minute:
                 mDialogHourMinute.show(getSupportFragmentManager(), "hour_minute");
                 break;
+            case R.id.btn_pop_wind:
+                timePickPopWindow.showAsDropDown(v);
+                break;
         }
     }
 
 
     @Override
-    public void onDateSet(TimePickerDialog timePickerDialog, long millseconds) {
+    public void onDateSet(long millseconds) {
         String text = getDateToString(millseconds);
         mTvTime.setText(text);
     }

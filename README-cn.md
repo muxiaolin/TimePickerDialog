@@ -1,6 +1,8 @@
 ##### 欢迎关注我
 GitHub: https://github.com/JZXiang
 
+v1.0.2 新增PopWindow支持。
+
 ---
 
 # TimePickerDialog

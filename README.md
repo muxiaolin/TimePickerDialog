@@ -5,6 +5,8 @@ GitHub: https://github.com/JZXiang
 修改加入重置按钮，更新androidx
 implementation 'io.github.muxiaolin:TimePickerDialog:1.0.1'
 
+v1.0.2 新增PopWindow支持。
+
 [中文版文档](https://github.com/JZXiang/TimePickerDialog/blob/master/README-cn.md)
 # TimePickerDialog
 An Android time picker library.  
@@ -14,6 +16,9 @@ Able to set the minimun and maximum millseconds.
 
 [ChangeLog](https://github.com/JZXiang/TimePickerDialog/blob/master/change_log.md)  
 [Download APK](https://github.com/JZXiang/PickerView/raw/master/sample-debug.apk)
+
+
+
 
 ## gradle, latest version:
 ```java

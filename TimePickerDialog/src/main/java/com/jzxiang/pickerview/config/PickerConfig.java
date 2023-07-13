@@ -18,6 +18,7 @@ public class PickerConfig {
     public String mResetString = DefaultConfig.RESET;
     public String mTitleString = DefaultConfig.TITLE;
     public int mToolBarTVColor = DefaultConfig.TOOLBAR_TV_COLOR;
+    public int mToolBarPadding = 0;//px
 
     public int mWheelTVNormalColor = DefaultConfig.TV_NORMAL_COLOR;
     public int mWheelTVSelectorColor = DefaultConfig.TV_SELECTOR_COLOR;

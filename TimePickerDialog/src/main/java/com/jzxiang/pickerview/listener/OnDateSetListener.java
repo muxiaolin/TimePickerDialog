@@ -7,9 +7,9 @@ import com.jzxiang.pickerview.TimePickerDialog;
  */
 public interface OnDateSetListener {
 
-    void onDateSet(TimePickerDialog timePickerView, long millseconds);
+    void onDateSet(long millseconds);
 
-    default void onDateReSet(TimePickerDialog timePickerView) {
+    default void onDateReSet() {
 
     }
 }
